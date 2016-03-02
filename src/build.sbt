@@ -15,6 +15,10 @@ lazy val front = (project in file("front")).
 lazy val common = (project in file("common")).
   settings(commonSettings: _*).
   settings(
+    resolvers ++= Seq(
+      Resolver.sonatypeRepo("releases"),
+      "Twitter Maven" at "https://maven.twttr.com"
+    ),
     libraryDependencies ++= Seq(
       "com.twitter.finatra" %% "finatra-http" % versions.finatra,
       "ch.qos.logback" % "logback-classic" % versions.logback
