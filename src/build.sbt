@@ -10,9 +10,6 @@ lazy val versions = new {
 }
 
 lazy val front = (project in file("front")).
-  settings(commonSettings: _*)
-
-lazy val common = (project in file("common")).
   settings(commonSettings: _*).
   settings(
     resolvers ++= Seq(
@@ -24,4 +21,7 @@ lazy val common = (project in file("common")).
       "ch.qos.logback" % "logback-classic" % versions.logback
     )
   )
+
+lazy val common = (project in file("common")).
+  settings(commonSettings: _*)
 
