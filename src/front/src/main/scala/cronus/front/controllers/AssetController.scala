@@ -1,32 +1,43 @@
 package cronus.front.controllers
 
-import java.util.Collection
-import java.util.regex.Pattern
+import java.nio.file.{Files, Paths}
+import javax.inject.Inject
 
 import com.twitter.finagle.http.Request
 import com.twitter.finatra.http.Controller
-import org.webjars.WebJarAssetLocator
+import com.twitter.finatra.utils.FuturePools
+import cronus.front.services.WebJarAssetService
 
+class AssetController @Inject()(webJarAssetService: WebJarAssetService)
+  extends Controller {
 
-import scala.collection.JavaConversions._
+  private val futurePool = FuturePools.unboundedPool("CallbackConverter")
 
-class AssetController extends Controller {
-
-  get("/atest") {request: Request =>
-    val locator: WebJarAssetLocator = new WebJarAssetLocator()
-    val str: String = locator.getFullPath("bootstrap", "bootstrap.min.css")
-
-    response.ok.fileOrIndex(str, "index.html")
+  get("/assets/:webjar/") { request: Request =>
+    response.notFound
   }
 
-  get("/wj") {request: Request =>
-    val locator: WebJarAssetLocator = new WebJarAssetLocator()
-    val assets = locator.listAssets()
-    val str: String = assets.mkString("\n")
-    response.ok.body(str)
-  }
+  get("/assets/:webjar/:*") { request: Request =>
+    futurePool {
+      val webjar: String = request.params("webjar")
+      val tail: String = request.params("*")
+      if (tail.isEmpty) {
+        response.notFound
+      } else {
+        val path = webJarAssetService.getFilePath(webjar, tail)
+        if (path.isEmpty) {
+          response.notFound
+        }
+        else {
+          val mimeType: String = Files.probeContentType(Paths.get(path.get))
+          val futureString: Option[String] = webJarAssetService.fileToString(path.get)
+          futureString match {
+            case Some(str) => response.ok.body(str).contentType(if (mimeType == null) "text/plain" else mimeType)
+            case None => response.internalServerError
+          }
+        }
+      }
+    }
 
-  get("/assets:*") { request: Request =>
-    response.ok.body("ok")
   }
 }
