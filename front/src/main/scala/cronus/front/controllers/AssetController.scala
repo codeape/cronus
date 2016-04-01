@@ -30,9 +30,9 @@ class AssetController @Inject()(webJarAssetService: WebJarAssetService)
         }
         else {
           val mimeType: String = Files.probeContentType(Paths.get(path.get))
-          val futureString: Option[String] = webJarAssetService.fileToString(path.get)
-          futureString match {
-            case Some(str) => response.ok.body(str).contentType(if (mimeType == null) "text/plain" else mimeType)
+          val bytesOpt: Option[Array[Byte]] = webJarAssetService.fileToString(path.get)
+          bytesOpt match {
+            case Some(bytes) => response.ok.body(bytes).contentType(if (mimeType == null) "text/plain" else mimeType)
             case None => response.internalServerError
           }
         }

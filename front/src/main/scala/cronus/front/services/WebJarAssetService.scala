@@ -5,8 +5,6 @@ import javax.inject.{Inject, Singleton}
 
 import org.webjars.WebJarAssetLocator
 
-import scala.io.Source
-
 @Singleton
 class WebJarAssetService @Inject()(webJarAssetLocator: WebJarAssetLocator) {
 
@@ -18,13 +16,13 @@ class WebJarAssetService @Inject()(webJarAssetLocator: WebJarAssetLocator) {
     }
   }
 
-  def fileToString(path: String): Option[String] = {
+  def fileToString(path: String): Option[Array[Byte]] = {
     try {
       val is = webJarAssetLocator.getClass.getClassLoader.getResourceAsStream(path)
       if (null == is) {
         None
       } else {
-        Some(Source.fromInputStream(is).mkString)
+        Some(Iterator.continually(is.read()).takeWhile(-1!=_).map(_.toByte).toArray)
       }
     } catch  {
       case e: IllegalArgumentException => None

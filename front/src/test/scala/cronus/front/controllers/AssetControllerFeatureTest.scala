@@ -20,11 +20,10 @@ class AssetControllerFeatureTest extends FeatureTest
 
   "AssetController" should  {
     "return -ok- for an existing WebJar resource" in {
-      val path: String = "css/bootstrap.min.css"
       val locator: WebJarAssetLocator = new WebJarAssetLocator()
-      val fullPath = locator.getFullPath("bootstrap", path)
+      val fullPath = locator.getFullPath("bootstrap", "js/npm.js")
       val is = locator.getClass.getClassLoader.getResourceAsStream(fullPath)
-      server.httpGet(path="/assets/bootstrap/css/bootstrap.min.css", andExpect = Status.Ok,
+      server.httpGet(path="/assets/bootstrap/js/npm.js", andExpect = Status.Ok,
         withBody = Source.fromInputStream(is).mkString)
     }
 
