@@ -7,9 +7,14 @@ lazy val commonSettings = Seq(
 lazy val versions = new {
   val finatra = "2.1.5"
   val guice = "4.0"
-  val logback = "1.0.13"
+  val logback = "1.1.3"
   val webjars_locator = "0.30"
+  val mocito_core = "1.9.5"
   val bootstrap = "3.3.6"
+  val scalatest = "2.2.3"
+  val scalactic = "2.2.3"
+  val specs2 = "2.3.12"
+  val akka = "2.4.3"
 }
 
 lazy val common = (project in file("common")).
@@ -42,10 +47,15 @@ lazy val front = (project in file("front")).
       "com.twitter.inject" %% "inject-core" % versions.finatra % "test" classifier "tests",
       "com.twitter.inject" %% "inject-modules" % versions.finatra % "test" classifier "tests",
 
-      "org.mockito" % "mockito-core" % "1.9.5" % "test",
-      "org.scalactic" %% "scalactic" % "2.2.3",
-      "org.scalatest" %% "scalatest" % "2.2.3" % "test",
-      "org.specs2" %% "specs2" % "2.3.12" % "test",
+      "org.mockito" % "mockito-core" % versions.mocito_core % "test",
+      "org.scalactic" %% "scalactic" % versions.scalactic,
+      "org.scalatest" %% "scalatest" % versions.scalatest % "test",
+      "org.specs2" %% "specs2" % versions.specs2 % "test",
+
+
+      "com.twitter" % "bijection-util_2.11" % "0.9.2",
+      "com.typesafe.akka" %% "akka-actor" % versions.akka,
+      "com.typesafe.akka" %% "akka-slf4j" % versions.akka,
 
       "org.webjars" % "webjars-locator" % versions.webjars_locator,
       "org.webjars" % "bootstrap" % versions.bootstrap
