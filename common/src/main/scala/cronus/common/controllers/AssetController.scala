@@ -1,12 +1,13 @@
-package cronus.front.controllers
+package cronus.common.controllers
 
-import java.nio.file.{Files, Paths}
 import javax.inject.Inject
 
 import com.twitter.finagle.http.Request
 import com.twitter.finatra.http.Controller
 import com.twitter.finatra.utils.FuturePools
-import cronus.front.services.{WebJarAssetCache, WebJarAssetService}
+import cronus.common.services.WebJarAssetCache.ContentReply
+import cronus.common.services.WebJarAssetService
+
 
 class AssetController @Inject()(webJarAssetService: WebJarAssetService)
   extends Controller {
@@ -21,8 +22,8 @@ class AssetController @Inject()(webJarAssetService: WebJarAssetService)
     webJarAssetService.getFile(request.params("webjar"), request.params("*"))
       .map{ message =>
         message match {
-          case WebJarAssetCache.ContentReply(Some(bytes), mime) => response.ok.body(bytes).contentType(mime)
-          case WebJarAssetCache.ContentReply(None, mime) => response.notFound
+          case ContentReply(Some(bytes), mime) => response.ok.body(bytes).contentType(mime)
+          case ContentReply(None, mime) => response.notFound
         }
       }
   }

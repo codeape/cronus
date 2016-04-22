@@ -1,4 +1,4 @@
-package cronus.front.services
+package cronus.common.services
 
 import java.nio.file.{Files, Paths}
 import javax.inject.{Inject, Singleton}
@@ -10,7 +10,6 @@ import com.twitter.bijection.Conversion.asMethod
 import com.twitter.bijection.twitter_util.UtilBijections._
 import com.twitter.inject.Logging
 import com.twitter.util.{Future => TwitterFuture}
-import cronus.front.services.WebJarAssetCache.{ContentReply, ContentRequest}
 import org.webjars.WebJarAssetLocator
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -20,6 +19,8 @@ import scala.concurrent.{Future => ScalaFuture}
 
 @Singleton
 class WebJarAssetService @Inject()(webJarAssetLocator: WebJarAssetLocator, actorSystem: ActorSystem) extends Logging {
+
+  import WebJarAssetCache._
 
   implicit val timeout = Timeout(5.seconds)
 
@@ -32,6 +33,8 @@ class WebJarAssetService @Inject()(webJarAssetLocator: WebJarAssetLocator, actor
 }
 
 class WebJarAssetCache(assetLocator: WebJarAssetLocator) extends Actor with akka.actor.ActorLogging {
+
+  import WebJarAssetCache._
 
   var pages: scala.collection.mutable.Map[(String, String), ContentReply] =
     scala.collection.mutable.Map.empty[(String, String), ContentReply]

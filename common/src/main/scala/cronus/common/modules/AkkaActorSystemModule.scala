@@ -1,4 +1,4 @@
-package cronus.front.modules
+package cronus.common.modules
 
 import akka.actor.ActorSystem
 import com.google.inject.{Provides, Singleton}

@@ -3,8 +3,9 @@ package cronus.front
 import com.twitter.finatra.http.filters.CommonFilters
 import com.twitter.finatra.http.HttpServer
 import com.twitter.finatra.http.routing.HttpRouter
-import cronus.front.controllers.{AssetController, UserLoginController}
-import cronus.front.modules.{AkkaActorSystemModule, WebJarAssetModule}
+import cronus.common.controllers.AssetController
+import cronus.common.modules.{AkkaActorSystemModule, WebJarAssetModule}
+import cronus.front.controllers.UserLoginController
 
 object FrontServerMain extends FrontServer
 

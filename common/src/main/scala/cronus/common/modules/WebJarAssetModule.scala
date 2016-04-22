@@ -1,4 +1,4 @@
-package cronus.front.modules
+package cronus.common.modules
 
 import com.google.inject.{Provides, Singleton}
 import com.twitter.inject.{Logging, TwitterModule}

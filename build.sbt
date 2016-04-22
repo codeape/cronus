@@ -18,9 +18,6 @@ lazy val versions = new {
 }
 
 lazy val common = (project in file("common")).
-  settings(commonSettings: _*)
-
-lazy val front = (project in file("front")).
   settings(commonSettings: _*).
   settings(
     resolvers ++= Seq(
@@ -57,10 +54,19 @@ lazy val front = (project in file("front")).
       "com.typesafe.akka" %% "akka-actor" % versions.akka,
       "com.typesafe.akka" %% "akka-slf4j" % versions.akka,
 
-      "org.webjars" % "webjars-locator" % versions.webjars_locator,
+      "org.webjars" % "webjars-locator" % versions.webjars_locator
+    )
+  )
+
+lazy val front = (project in file("front")).
+  settings(commonSettings: _*).
+  settings(
+    resolvers ++= Seq(
+      Resolver.sonatypeRepo("releases"),
+      "Twitter Maven" at "https://maven.twttr.com"
+    ),
+    libraryDependencies ++= Seq(
       "org.webjars" % "bootstrap" % versions.bootstrap
     )
-  ).
-  dependsOn(common)
-
-
+  )
+  .dependsOn(common % "test->test;compile->compile")
