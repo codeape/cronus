@@ -20,11 +20,9 @@ class AssetController @Inject()(webJarAssetService: WebJarAssetService)
 
   get("/assets/:webjar/:*") { request: Request =>
     webJarAssetService.getFile(request.params("webjar"), request.params("*"))
-      .map{ message =>
-        message match {
-          case ContentReply(Some(bytes), mime) => response.ok.body(bytes).contentType(mime)
-          case ContentReply(None, mime) => response.notFound
-        }
+      .map {
+        case ContentReply(Some(bytes), mime) => response.ok.body(bytes).contentType(mime)
+        case ContentReply(None, mime) => response.notFound
       }
   }
 }
