@@ -1,7 +1,20 @@
+parallelExecution in ThisBuild := false
+
+
 lazy val commonSettings = Seq(
   organization := "org.codeape",
   version := "0.0.1",
   scalaVersion := "2.11.7"
+  , parallelExecution in ThisBuild := false
+  , fork in Test := true
+  //parallelExecution in Global := false
+  //testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-P1"),
+  //fork in Test := true,
+  //parallelExecution in Test := false
+  //parallelExecution in IntegrationTest := false,
+  //concurrentRestrictions in Global += Tags.exclusive(Tags.Test),
+  //concurrentRestrictions in Global += Tags.limit(Tags.Test, 1)
+  //testOptions in Test += Tests.Argument("sequential")
 )
 
 lazy val versions = new {
