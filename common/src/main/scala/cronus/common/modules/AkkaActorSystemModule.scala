@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import com.google.inject.{Provides, Singleton}
 import com.twitter.inject.{Injector, Logging, TwitterModule}
 
-object AkkaActorSystemModule extends TwitterModule with Logging{
+class AkkaActorSystemModule extends TwitterModule with Logging{
 
   val system = Some(ActorSystem())
 

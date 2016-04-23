@@ -11,7 +11,7 @@ object FrontServerMain extends FrontServer
 
 class FrontServer extends HttpServer {
 
-  override val modules = Seq(WebJarAssetModule, AkkaActorSystemModule)
+  override val modules = Seq(WebJarAssetModule, new AkkaActorSystemModule)
 
   override def configureHttp(router: HttpRouter) {
     router
