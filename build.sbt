@@ -19,6 +19,7 @@ lazy val versions = new {
   val scalactic = "2.2.3"
   val specs2 = "2.3.12"
   val akka = "2.4.3"
+  val backbonejs = "1.3.2"
 }
 
 lazy val common = (project in file("common")).
@@ -70,7 +71,8 @@ lazy val front = (project in file("front")).
       "Twitter Maven" at "https://maven.twttr.com"
     ),
     libraryDependencies ++= Seq(
-      "org.webjars" % "bootstrap" % versions.bootstrap
+      "org.webjars" % "bootstrap" % versions.bootstrap,
+      "org.webjars" % "backbonejs" % versions.backbonejs
     )
   )
   .dependsOn(common % "test->test;compile->compile")

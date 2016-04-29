@@ -30,6 +30,12 @@ class AssetControllerFeatureTest extends FeatureTest
       val response = server.httpGet(path="/assets/bootstrap/js/npm.js", andExpect = Status.Ok,
         withBody = Source.fromInputStream(is).mkString)
       response.contentType should equal(Some(MediaType.JAVASCRIPT_UTF_8.toString))
+
+      val fullPath2 = locator.getFullPath("backbonejs", "backbone-min.js")
+      val is2 = locator.getClass.getClassLoader.getResourceAsStream(fullPath2)
+      val response2 = server.httpGet(path="/assets/backbonejs/backbone-min.js", andExpect = Status.Ok,
+        withBody = Source.fromInputStream(is2).mkString)
+      response2.contentType should equal(Some(MediaType.JAVASCRIPT_UTF_8.toString))
     }
 
     "return -not found- for an path containing only a webjar name" in {
