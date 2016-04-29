@@ -22,6 +22,10 @@ lazy val versions = new {
   val backbonejs = "1.3.2"
 }
 
+lazy val cronusw = (project in file("cronusw")).
+  settings(commonSettings: _*)
+  .enablePlugins(SbtWeb)
+
 lazy val common = (project in file("common")).
   settings(commonSettings: _*).
   settings(
@@ -62,6 +66,7 @@ lazy val common = (project in file("common")).
       "org.webjars" % "webjars-locator" % versions.webjars_locator
     )
   )
+  .dependsOn(cronusw)
 
 lazy val front = (project in file("front")).
   settings(commonSettings: _*).
@@ -76,3 +81,4 @@ lazy val front = (project in file("front")).
     )
   )
   .dependsOn(common % "test->test;compile->compile")
+
