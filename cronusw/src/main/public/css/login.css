@@ -1,0 +1,14 @@
+body {
+   padding-top: 100px
+}
+
+.container {
+  max-width: 330px;
+}
+
+.container .jumbotron {
+    padding-right: 30px;
+    padding-left: 30px;
+    padding-top: 6px;
+    padding-bottom: 24px;
+}

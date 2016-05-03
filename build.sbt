@@ -20,6 +20,8 @@ lazy val versions = new {
   val specs2 = "2.3.12"
   val akka = "2.4.3"
   val backbonejs = "1.3.2"
+  val underscorejs = "1.8.3"
+  val jquery = "1.11.1"
 }
 
 lazy val cronusw = (project in file("cronusw")).
@@ -77,7 +79,9 @@ lazy val front = (project in file("front")).
     ),
     libraryDependencies ++= Seq(
       "org.webjars" % "bootstrap" % versions.bootstrap,
-      "org.webjars" % "backbonejs" % versions.backbonejs
+      "org.webjars" % "backbonejs" % versions.backbonejs,
+      "org.webjars" % "underscorejs" % versions.underscorejs,
+      "org.webjars" % "jquery" % versions.jquery
     )
   )
   .dependsOn(common % "test->test;compile->compile")
