@@ -21,19 +21,19 @@
     <![endif]-->
 </head>
 <body>
-    <div class="container">
-        <div class="jumbotron">
-        <form id="login-form">
-            <h2>Sign in</h2>
-            <label class="sr-only" for="user">User</label>
-            <input type="text" id="user" class="form-control" placeholder="User" required autofocus>
-            <label class="sr-only" for="password">Password</label>
-            <input type="password" id="password"  class="form-control" placeholder="Password" required>
-            <button class="btn btn-primary btn-block" type="submit" id="login">Sign in</button>
-        </form>
+    <input type="hidden" name="token" value="{{token}}">
+    <div id="main"></div>
+    <div class="container" id="login-div">
+        <div class="jumbotron" id="login-form">
+                <h2>Sign in</h2>
+                <label class="sr-only" for="user">User</label>
+                <input type="text" id="user" class="form-control" placeholder="User" required autofocus>
+                <label class="sr-only" for="password">Password</label>
+                <input type="password" id="password"  class="form-control" placeholder="Password" required>
+                <button class="btn btn-primary btn-block" id="login">Sign in</button>
         </div>
     </div>
-    
+
     <!-- jQuery necessary for Bootstrap JavaScript plugins and backbone-->
     <script src="/assets/jquery/jquery.min.js" type="text/javascript"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -44,6 +44,6 @@
     <script src="/assets/backbonejs/backbone-min.js" type="text/javascript"></script>
 
     <!-- Cronus scripts -->
-    <script src="/assets/cronusw/js/login-user.js" type="text/javascript"></script>
+    <script src="/assets/cronusw/js/cronus-time.js" type="text/javascript"></script>
 </body>
 </html>

@@ -16,6 +16,7 @@ class UserLoginController extends Controller with Logging {
 
   post("/user/authenticate"){ request: Request =>
     logger.debug(s"Auth: ${request.getContentString()}")
+    response.ok.contentTypeJson().body(request.getContentString())
   }
 
 }
