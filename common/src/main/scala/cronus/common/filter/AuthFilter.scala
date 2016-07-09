@@ -2,7 +2,6 @@ package cronus.common.filter
 
 import javax.inject.Singleton
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.google.inject.Inject
 import com.twitter.finagle.{Service, SimpleFilter}
@@ -11,14 +10,16 @@ import com.twitter.finatra.http.response.ResponseBuilder
 import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.inject.Logging
 import com.twitter.util.Future
+import cronus.common.auth.AuthData
 
 
-case class AuthData(@JsonProperty("token") token: String)
+
 
 @Singleton
 class AuthFilter @Inject()(
                             finatraObjectMapper: FinatraObjectMapper,
-                            responseBuilder: ResponseBuilder)
+                            responseBuilder: ResponseBuilder
+                          )
   extends SimpleFilter[Request, Response] with Logging
 {
   override def apply(request: Request, service: Service[Request, Response]): Future[Response] = {
@@ -41,8 +42,9 @@ class AuthFilter @Inject()(
 
 @Singleton
 class LaxedAuthFilter @Inject()(
-                            finatraObjectMapper: FinatraObjectMapper,
-                            responseBuilder: ResponseBuilder)
+                                 finatraObjectMapper: FinatraObjectMapper,
+                                 responseBuilder: ResponseBuilder
+                               )
   extends SimpleFilter[Request, Response] with Logging
 {
   override def apply(request: Request, service: Service[Request, Response]): Future[Response] = {

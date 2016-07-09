@@ -9,7 +9,7 @@ $(function(){
         },
         login: function() {
             console.log("Login view loaded")
-            new LoginView({token: window.token, model: new Credentials()})
+            new LoginView({model: window.credentials})
         },
         denied: function() {
 
@@ -38,16 +38,11 @@ $(function(){
         defaults: {
             uid: null,
             password: null,
+            token: null
         }
     });
 
-    var Token = Backbone.Model.extend({
-        defaults: {
-            token: null
-        }
-    })
-
-    window.token = new Token()
+    window.credentials = new Credentials()
 
     var LoginView = Backbone.View.extend({
         el: '#login-form',
