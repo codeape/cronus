@@ -66,7 +66,8 @@ $(function(){
         }
     });
 
-    Backbone.history.start()
     var workspace = new Workspace();
-    window.location.replace('/time/#login');
+    Backbone.history.start()
+    workspace.navigate('login', {trigger: true});
+
 });
