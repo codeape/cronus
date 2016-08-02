@@ -22,6 +22,7 @@ lazy val versions = new {
   val backbonejs = "1.3.2"
   val underscorejs = "1.8.3"
   val jquery = "1.11.1"
+  val requirejs = "2.2.0"
 }
 
 lazy val cronusw = (project in file("cronusw")).
@@ -78,6 +79,7 @@ lazy val front = (project in file("front")).
       "Twitter Maven" at "https://maven.twttr.com"
     ),
     libraryDependencies ++= Seq(
+      "org.webjars" % "requirejs" % versions.requirejs,
       "org.webjars" % "bootstrap" % versions.bootstrap,
       "org.webjars" % "backbonejs" % versions.backbonejs,
       "org.webjars" % "underscorejs" % versions.underscorejs,

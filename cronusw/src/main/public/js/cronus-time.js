@@ -1,4 +1,9 @@
-$(function(){
+
+define([
+  'jquery',
+  'underscore',
+  'backbone',
+  ], function($, _, Backbone) {
     console.log("cronus time is on!")
 
     var Workspace = Backbone.Router.extend({
