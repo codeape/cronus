@@ -3,28 +3,34 @@ package cronus.common.services
 import java.nio.file.{Files, Paths}
 import javax.inject.{Inject, Singleton}
 
-import akka.actor.{Actor, ActorRef, ActorSystem, Props}
+import akka.actor.{Actor, ActorLogging, ActorRef, ActorSystem, Props}
 import akka.pattern.ask
 import akka.util.Timeout
 import com.twitter.bijection.Conversion.asMethod
 import com.twitter.bijection.twitter_util.UtilBijections._
 import com.twitter.inject.Logging
 import com.twitter.util.{Future => TwitterFuture}
+import cronus.common.modules.ConfigFlags
 import org.webjars.WebJarAssetLocator
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
-import scala.concurrent.{Future => ScalaFuture}
 
 
 @Singleton
-class WebJarAssetService @Inject()(webJarAssetLocator: WebJarAssetLocator, actorSystem: ActorSystem) extends Logging {
+class WebJarAssetService @Inject()(
+                                    actorSystem: ActorSystem,
+                                    webJarAssetLocator: WebJarAssetLocator,
+                                    configFlags: ConfigFlags
+                                  )
+  extends Logging
+{
 
   import WebJarAssetCache._
 
   implicit val timeout = Timeout(5.seconds)
 
-  val cache: ActorRef = WebJarAssetCache.make(actorSystem, webJarAssetLocator)
+  val cache: ActorRef = WebJarAssetCache.make(actorSystem, webJarAssetLocator, configFlags)
 
   def getFile(webjar: String, partialPath: String): TwitterFuture[WebJarAssetCache.ContentReply] = {
     val scalaFuture = ask(cache, ContentRequest(webjar, partialPath)).mapTo[WebJarAssetCache.ContentReply]
@@ -32,7 +38,9 @@ class WebJarAssetService @Inject()(webJarAssetLocator: WebJarAssetLocator, actor
   }
 }
 
-class WebJarAssetCache(assetLocator: WebJarAssetLocator) extends Actor with akka.actor.ActorLogging {
+class WebJarAssetCache(assetLocator: WebJarAssetLocator, configFlags: ConfigFlags)
+  extends Actor with ActorLogging
+{
 
   import WebJarAssetCache._
 
@@ -57,7 +65,12 @@ class WebJarAssetCache(assetLocator: WebJarAssetLocator) extends Actor with akka
     case ContentRequest(webJar, path) =>
       log.debug(s"Cache received request for webjar: $webJar path: $path")
       val page = pages.get((webJar, path))
-      val response = if (page.isDefined) {
+      val response = if(webJar == "cronusw" && configFlags.cronusAssetPath.isDefined) {
+        val fsystemPath = Paths.get(configFlags.cronusAssetPath.get, path).toString
+        val mime: String = Files.probeContentType(Paths.get(fsystemPath))
+        val bytes =  scala.io.Source.fromFile(fsystemPath).map(_.toByte).toArray
+        ContentReply(Some(bytes), if (mime == null) "text/plain" else mime )
+      } else if (page.isDefined) {
         page.get
       } else {
         val bytes = fileToArray(webJar, path)
@@ -76,11 +89,13 @@ class WebJarAssetCache(assetLocator: WebJarAssetLocator) extends Actor with akka
   }
 }
 
-object WebJarAssetCache {
+object WebJarAssetCache extends Logging{
   case class ContentRequest(webJar: String, path: String)
   case class ContentReply(content: Option[Array[Byte]], mimeType: String)
 
-  def make(sys: ActorSystem, assetLocator: WebJarAssetLocator): ActorRef =
-    sys.actorOf(Props(classOf[WebJarAssetCache], assetLocator))
+  def make(sys: ActorSystem, assetLocator: WebJarAssetLocator, configFlags: ConfigFlags): ActorRef = {
+    logger.debug(s"Using debug config $configFlags")
+    sys.actorOf(Props(classOf[WebJarAssetCache], assetLocator, configFlags))
+  }
 }
 

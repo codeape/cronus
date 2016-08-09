@@ -9,7 +9,7 @@ lazy val commonSettings = Seq(
 )
 
 lazy val versions = new {
-  val finatra = "2.1.5"
+  val finatra = "2.1.6"
   val guice = "4.0"
   val logback = "1.1.3"
   val webjars_locator = "0.30"
@@ -19,6 +19,7 @@ lazy val versions = new {
   val scalactic = "2.2.3"
   val specs2 = "2.3.12"
   val akka = "2.4.3"
+  val util_app = "6.34.0"
   val backbonejs = "1.3.2"
   val underscorejs = "1.8.3"
   val jquery = "1.11.1"
@@ -37,6 +38,7 @@ lazy val common = (project in file("common")).
       "Twitter Maven" at "https://maven.twttr.com"
     ),
     libraryDependencies ++= Seq(
+      "com.twitter" %% "util-app" % versions.util_app,
       "com.twitter.finatra" %% "finatra-http" % versions.finatra,
       "com.twitter.finatra" %% "finatra-httpclient" % versions.finatra,
       "ch.qos.logback" % "logback-classic" % versions.logback,

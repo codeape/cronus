@@ -5,14 +5,18 @@ import com.twitter.finatra.http.HttpServer
 import com.twitter.finatra.http.routing.HttpRouter
 import cronus.common.controllers.AssetController
 import cronus.common.filter.{AuthFilter, LaxedAuthFilter}
-import cronus.common.modules.{AkkaActorSystemModule, WebJarAssetModule}
+import cronus.common.modules.{AkkaActorSystemModule, CronusConfigFlagsModule, WebJarAssetModule}
 import cronus.front.controllers.{MainJsController, TimeController, TimeSheetController, UserLoginController}
 
 object FrontServerMain extends FrontServer
 
 class FrontServer extends HttpServer {
 
-  override val modules = Seq(WebJarAssetModule, new AkkaActorSystemModule)
+  override val modules = Seq(
+    new CronusConfigFlagsModule,
+    WebJarAssetModule,
+    new AkkaActorSystemModule
+  )
 
   override def configureHttp(router: HttpRouter) {
     router
