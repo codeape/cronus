@@ -3,7 +3,14 @@ define([
   'jquery',
   'underscore',
   'backbone',
-  ], function($, _, Backbone) {
+  './credentials',
+  './loginview'
+  ], function(
+  $,
+  _,
+  Backbone,
+  Credentials,
+  LoginView) {
     console.log("cronus time is on!")
 
     var Workspace = Backbone.Router.extend({
@@ -31,45 +38,16 @@ define([
                 window.location.replace('/time/#login');
 
             },
-            403: function() {
+            403: function() { // Maybe we should handle the rest here and not only 403
                 // 403 -- Access denied
                 window.location.replace('/time/#denied');
             }
         }
     });
 
-    var Credentials = Backbone.Model.extend({
-        url: '/user/authenticate',
-        defaults: {
-            uid: null,
-            password: null,
-            token: null
-        }
-    });
+
 
     window.credentials = new Credentials()
-
-    var LoginView = Backbone.View.extend({
-        el: '#login-form',
-
-        events: {
-            "change #user": 'onChangeUser',
-            "change #password": 'onChangePassword',
-            "click #login": 'onClickLogin'
-        },
-
-        onChangeUser: function(evt) {
-            this.model.set('uid', evt.currentTarget.value);
-        },
-
-        onChangePassword: function(evt) {
-            this.model.set('password', evt.currentTarget.value);
-        },
-
-        onClickLogin: function(evt) {
-            this.model.save();
-        }
-    });
 
     var workspace = new Workspace();
     Backbone.history.start()
