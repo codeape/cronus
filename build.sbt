@@ -3,7 +3,7 @@ parallelExecution in ThisBuild := false
 lazy val commonSettings = Seq(
   organization := "org.codeape",
   version := "0.0.1",
-  scalaVersion := "2.11.7",
+  scalaVersion := "2.11.8",
   parallelExecution in ThisBuild := false,
   fork in Test := false
 )
