@@ -27,8 +27,24 @@ lazy val versions = new {
 }
 
 lazy val cronusw = (project in file("cronusw")).
-  settings(commonSettings: _*)
-  .enablePlugins(SbtWeb)
+  settings(commonSettings: _*).
+  settings(
+    pipelineStages in Assets := Seq(rjs),
+    JsEngineKeys.engineType := JsEngineKeys.EngineType.Node,
+    //RjsKeys.mainConfig := "build",
+    RjsKeys.optimize := "none",
+    //JsEngineKeys.parallelism := 1,
+    libraryDependencies ++= Seq(
+      "org.webjars" % "requirejs" % versions.requirejs,
+      "org.webjars" % "bootstrap" % versions.bootstrap,
+      "org.webjars" % "backbonejs" % versions.backbonejs,
+      "org.webjars" % "underscorejs" % versions.underscorejs,
+      "org.webjars" % "jquery" % versions.jquery
+    )
+  ).
+  enablePlugins(SbtWeb)
+
+
 
 lazy val common = (project in file("common")).
   settings(commonSettings: _*).
@@ -81,11 +97,6 @@ lazy val front = (project in file("front")).
       "Twitter Maven" at "https://maven.twttr.com"
     ),
     libraryDependencies ++= Seq(
-      "org.webjars" % "requirejs" % versions.requirejs,
-      "org.webjars" % "bootstrap" % versions.bootstrap,
-      "org.webjars" % "backbonejs" % versions.backbonejs,
-      "org.webjars" % "underscorejs" % versions.underscorejs,
-      "org.webjars" % "jquery" % versions.jquery
     )
   )
   .dependsOn(common % "test->test;compile->compile")

@@ -24,10 +24,10 @@ class MainJsController @Inject()(
        |requirejs.config({baseUrl: '/'});
        |
        |require( ['assets/cronusw/js/cronus-time'], function ( cronus ) {});
-     """.stripMargin
+     """.stripMargin.trim()
   }
 
-  get("/main.js") { request: Request =>
+  get("/assets/cronusw/js/main.js") { request: Request =>
     response.ok.contentType("application/javascript").body(mainJsSource)
   }
 
