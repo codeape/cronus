@@ -21,19 +21,8 @@
     <![endif]-->
 </head>
 <body>
-    <input type="hidden" name="token" value="{{token}}">
+    <input type="hidden" id="token" name="authtoken" value="">
     <div id="main"></div>
-    <div class="container" id="login-div">
-        <div class="jumbotron" id="login-form">
-                <h2>Sign in</h2>
-                <label class="sr-only" for="user">User</label>
-                <input type="text" id="user" class="form-control" placeholder="User" required autofocus>
-                <label class="sr-only" for="password">Password</label>
-                <input type="password" id="password"  class="form-control" placeholder="Password" required>
-                <button class="btn btn-primary btn-block" id="login">Sign in</button>
-        </div>
-    </div>
-
     <!-- Requirejs handles coronus  -->
     <script data-main="/main" src="/assets/requirejs/require.js"></script>
 </body>

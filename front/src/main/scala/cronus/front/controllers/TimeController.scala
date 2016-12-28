@@ -8,7 +8,7 @@ import cronus.common.auth.AuthData
 import cronus.common.filter.AuthDataContext._
 
 @Mustache("time")
-case class TimeData(token: String)
+case class TimeData()
 
 class TimeController extends Controller with Logging {
 
@@ -16,7 +16,7 @@ class TimeController extends Controller with Logging {
     request.ctx
     val authData: AuthData = request.authData.getOrElse(AuthData(""))
     logger.debug(s"TOKEN: ${authData.token}")
-    TimeData(authData.token)
+    TimeData()
   }
 
 }

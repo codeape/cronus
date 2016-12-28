@@ -14,9 +14,17 @@ class MainJsController @Inject()(
   val mainJsSource = getMainFile()
 
   private def getMainFile(): String = {
-    val inclueded = requireJSHelper.getRequireJSModules("/assets/", Set("jquery", "underscorejs", "backbonejs"))
-      .map(setup => s"requirejs.config(${setup.setup});")
-      .mkString("\n")
+    val inclueded = requireJSHelper.getRequireJSModules(
+      "/assets/",
+      Set(
+        "jquery",
+        "underscorejs",
+        "backbonejs",
+        "mustachejs"
+      )
+    )
+    .map(setup => s"requirejs.config(${setup.setup});")
+    .mkString("\n")
 
     s"""
        |$inclueded
