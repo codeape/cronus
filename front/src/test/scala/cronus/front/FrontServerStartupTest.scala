@@ -1,7 +1,7 @@
 package cronus.front
 
 import com.google.inject.Stage
-import com.twitter.finatra.http.test.EmbeddedHttpServer
+import com.twitter.finatra.http.EmbeddedHttpServer
 import com.twitter.inject.server.FeatureTest
 
 class FrontServerStartupTest extends FeatureTest {

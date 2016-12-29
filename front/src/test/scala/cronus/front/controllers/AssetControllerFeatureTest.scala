@@ -2,7 +2,7 @@ package cronus.front.controllers
 
 import com.google.inject.Stage
 import com.twitter.finagle.http.Status
-import com.twitter.finatra.http.test.EmbeddedHttpServer
+import com.twitter.finatra.http.EmbeddedHttpServer
 import com.twitter.inject.server.FeatureTest
 import com.google.common.net.MediaType
 import cronus.front.FrontServer

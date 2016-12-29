@@ -9,17 +9,17 @@ lazy val commonSettings = Seq(
 )
 
 lazy val versions = new {
-  val finatra = "2.1.6"
+  val finatra = "2.6.0"
   val guice = "4.0"
   val logback = "1.1.3"
   val webjars_locator = "0.30"
   val mocito_core = "1.9.5"
   val bootstrap = "3.3.6"
-  val scalatest = "2.2.3"
-  val scalactic = "2.2.3"
+  val scalatest = "3.0.0"
+  val scalactic = "3.0.0"
   val specs2 = "2.3.12"
   val akka = "2.4.3"
-  val util_app = "6.34.0"
+  val util_app = "6.39.0"
   val backbonejs = "1.3.2"
   val underscorejs = "1.8.3"
   val jquery = "1.11.1"
@@ -54,30 +54,29 @@ lazy val common = (project in file("common")).
     ),
     libraryDependencies ++= Seq(
       "com.twitter" %% "util-app" % versions.util_app,
-      "com.twitter.finatra" %% "finatra-http" % versions.finatra,
-      "com.twitter.finatra" %% "finatra-httpclient" % versions.finatra,
+      "com.twitter" %% "finatra-http" % versions.finatra,
+      "com.twitter" %% "finatra-httpclient" % versions.finatra,
       "ch.qos.logback" % "logback-classic" % versions.logback,
 
-      "com.twitter.finatra" %% "finatra-http" % versions.finatra % "test",
-      "com.twitter.finatra" %% "finatra-jackson" % versions.finatra % "test",
-      "com.twitter.inject" %% "inject-server" % versions.finatra % "test",
-      "com.twitter.inject" %% "inject-app" % versions.finatra % "test",
-      "com.twitter.inject" %% "inject-core" % versions.finatra % "test",
-      "com.twitter.inject" %% "inject-modules" % versions.finatra % "test",
+      "com.twitter" %% "finatra-http" % versions.finatra % "test",
+      "com.twitter" %% "finatra-jackson" % versions.finatra % "test",
+      "com.twitter" %% "inject-server" % versions.finatra % "test",
+      "com.twitter" %% "inject-app" % versions.finatra % "test",
+      "com.twitter" %% "inject-core" % versions.finatra % "test",
+      "com.twitter" %% "inject-modules" % versions.finatra % "test",
       "com.google.inject.extensions" % "guice-testlib" % versions.guice % "test",
 
-      "com.twitter.finatra" %% "finatra-http" % versions.finatra % "test" classifier "tests",
-      "com.twitter.finatra" %% "finatra-jackson" % versions.finatra % "test" classifier "tests",
-      "com.twitter.inject" %% "inject-server" % versions.finatra % "test" classifier "tests",
-      "com.twitter.inject" %% "inject-app" % versions.finatra % "test" classifier "tests",
-      "com.twitter.inject" %% "inject-core" % versions.finatra % "test" classifier "tests",
-      "com.twitter.inject" %% "inject-modules" % versions.finatra % "test" classifier "tests",
+      "com.twitter" %% "finatra-http" % versions.finatra % "test" classifier "tests",
+      "com.twitter" %% "finatra-jackson" % versions.finatra % "test" classifier "tests",
+      "com.twitter" %% "inject-server" % versions.finatra % "test" classifier "tests",
+      "com.twitter" %% "inject-app" % versions.finatra % "test" classifier "tests",
+      "com.twitter" %% "inject-core" % versions.finatra % "test" classifier "tests",
+      "com.twitter" %% "inject-modules" % versions.finatra % "test" classifier "tests",
 
       "org.mockito" % "mockito-core" % versions.mocito_core % "test",
       "org.scalactic" %% "scalactic" % versions.scalactic,
       "org.scalatest" %% "scalatest" % versions.scalatest % "test",
       "org.specs2" %% "specs2" % versions.specs2 % "test",
-
 
       "com.twitter" % "bijection-util_2.11" % "0.9.2",
       "com.typesafe.akka" %% "akka-actor" % versions.akka,
