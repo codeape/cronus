@@ -22,7 +22,6 @@ class AssetControllerFeatureTest extends FeatureTest
 
   "AssetController" should  {
 
-
     "return -ok- for an existing WebJar resource" in {
       val locator: WebJarAssetLocator = new WebJarAssetLocator()
       val fullPath = locator.getFullPath("bootstrap", "js/npm.js")
