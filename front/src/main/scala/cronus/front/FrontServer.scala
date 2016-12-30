@@ -1,11 +1,11 @@
 package cronus.front
 
 import com.twitter.finagle.http.Request
-import com.twitter.finatra.http.filters.{CommonFilters, ExceptionMappingFilter}
 import com.twitter.finatra.http.HttpServer
+import com.twitter.finatra.http.filters.{CommonFilters, ExceptionMappingFilter}
 import com.twitter.finatra.http.routing.HttpRouter
 import cronus.common.controllers.AssetController
-import cronus.common.filter.{AuthFilter, LaxedAuthFilter}
+import cronus.common.filter.AuthFilter
 import cronus.common.modules.{AkkaActorSystemModule, CronusConfigFlagsModule, WebJarAssetModule}
 import cronus.front.controllers.{MainJsController, TimeController, TimeSheetController, UserLoginController}
 import cronus.front.exception.JsonMappingExceptionMapper
@@ -27,7 +27,7 @@ class FrontServer extends HttpServer {
       .add[AssetController]
       .add[UserLoginController]
       .add[MainJsController]
-      .add[LaxedAuthFilter, TimeController] // Filter needed to handle empty token.
+      .add[TimeController]
       .add[AuthFilter, TimeSheetController]
       .exceptionMapper[JsonMappingExceptionMapper]
   }

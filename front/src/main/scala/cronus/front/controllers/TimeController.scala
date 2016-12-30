@@ -13,9 +13,6 @@ case class TimeData()
 class TimeController extends Controller with Logging {
 
   get("/time/:*") { request: Request =>
-    request.ctx
-    val authData: AuthData = request.authData.getOrElse(AuthData(""))
-    logger.debug(s"TOKEN: ${authData.token}")
     TimeData()
   }
 
