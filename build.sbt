@@ -45,7 +45,7 @@ lazy val cronusw = (project in file("cronusw")).
   )
   .enablePlugins(SbtWeb)
 
-lazy val common = (project in file("common")).
+lazy val root = (project in file(".")).
   settings(commonSettings: _*).
   settings(
     resolvers ++= Seq(
@@ -86,17 +86,4 @@ lazy val common = (project in file("common")).
     )
   )
   .dependsOn(cronusw)
-
-lazy val front = (project in file("front")).
-  settings(commonSettings: _*).
-  settings(
-    resolvers ++= Seq(
-      Resolver.sonatypeRepo("releases"),
-      "Twitter Maven" at "https://maven.twttr.com"
-    ),
-    libraryDependencies ++= Seq(
-
-    )
-  )
-  .dependsOn(common % "test->test;compile->compile")
 
