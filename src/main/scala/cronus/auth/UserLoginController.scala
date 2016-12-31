@@ -1,11 +1,10 @@
-package cronus.controllers
+package cronus.auth
 
 import com.google.inject.Inject
 import com.twitter.finagle.http.Request
 import com.twitter.finatra.http.Controller
 import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.inject.Logging
-import cronus.auth.{AuthShuttle, TokenCodec}
 
 class UserLoginController @Inject()(finatraObjectMapper: FinatraObjectMapper) extends Controller with Logging {
 

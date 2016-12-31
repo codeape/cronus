@@ -4,7 +4,7 @@ import com.twitter.finagle.http.Request
 import com.twitter.finatra.http.HttpServer
 import com.twitter.finatra.http.filters.{CommonFilters, ExceptionMappingFilter}
 import com.twitter.finatra.http.routing.HttpRouter
-import cronus.filter.AuthFilter
+import cronus.auth.{AuthFilter, UserLoginController}
 import cronus.modules.{AkkaActorSystemModule, CronusConfigFlagsModule, WebJarAssetModule}
 import cronus.controllers._
 import cronus.exception.JsonMappingExceptionMapper

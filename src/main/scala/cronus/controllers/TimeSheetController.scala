@@ -5,7 +5,7 @@ import com.twitter.finatra.http.Controller
 import com.twitter.finatra.response.Mustache
 import com.twitter.inject.Logging
 import cronus.auth.AuthData
-import cronus.filter.AuthDataContext._
+import cronus.auth.AuthDataContext._
 
 @Mustache("timesheet")
 case class TimeSheet(token: String)

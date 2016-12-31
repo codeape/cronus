@@ -1,4 +1,4 @@
-package cronus.controllers
+package cronus.auth
 
 import com.google.inject.Stage
 import com.twitter.finagle.http.Status
@@ -6,7 +6,6 @@ import com.twitter.finatra.http.EmbeddedHttpServer
 import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.inject.server.FeatureTest
 import cronus.FrontServer
-import cronus.auth.AuthShuttle
 
 class UserLoginControllerTest extends FeatureTest {
 

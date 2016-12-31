@@ -1,15 +1,14 @@
-package cronus.filter
+package cronus.auth
 
 import javax.inject.Singleton
 
 import com.google.inject.Inject
-import com.twitter.finagle.{Service, SimpleFilter}
 import com.twitter.finagle.http.{Request, Response}
+import com.twitter.finagle.{Service, SimpleFilter}
 import com.twitter.finatra.http.response.ResponseBuilder
 import com.twitter.finatra.json.FinatraObjectMapper
 import com.twitter.inject.Logging
 import com.twitter.util.Future
-import cronus.auth.AuthData
 
 @Singleton
 class AuthFilter @Inject()(
