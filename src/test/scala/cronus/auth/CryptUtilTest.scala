@@ -1,5 +1,6 @@
 package cronus.auth
 
+import java.nio.charset.StandardCharsets
 import javax.crypto.{BadPaddingException, IllegalBlockSizeException}
 
 import com.twitter.inject.Logging
@@ -11,7 +12,7 @@ import scala.annotation.tailrec
 class CryptUtilTest extends WordSpec with Logging {
 
   val cryptoUtil = new CryptUtil("TestKeyLongerThan128Bits!")
-  val defaultSalt = "MySalt1234"
+  val defaultSalt = "MySalt1234".getBytes(StandardCharsets.UTF_8)
   val data = "A fine string"
 
   "CryptoUtil" should {
@@ -26,9 +27,10 @@ class CryptUtilTest extends WordSpec with Logging {
     }
 
     "Encrypt and decrypt a empty string and salt correctly" in {
-      val decryptedDataFuture = cryptoUtil.encrypt("", "").flatMap{ encryptedData =>
+      val mysalt = "".getBytes(StandardCharsets.UTF_8)
+      val decryptedDataFuture = cryptoUtil.encrypt(mysalt, "").flatMap{ encryptedData =>
         assert(encryptedData != data, "Enrypted data is the same as the source data")
-        cryptoUtil.decrypt("", encryptedData)
+        cryptoUtil.decrypt(mysalt, encryptedData)
       }
       val decryptedData = Await.result(decryptedDataFuture)
       assert(decryptedData == "", "The encrypted data was not the same as the source")
@@ -37,10 +39,11 @@ class CryptUtilTest extends WordSpec with Logging {
     "Encrypt and decrypt many string correctly" in {
       @tailrec
       def testEncryptDecrypt(data: String, count: Int): Unit ={
+        val mysalt = "".getBytes(StandardCharsets.UTF_8)
         if (count == 0) return
-        val decryptedDataFuture = cryptoUtil.encrypt("", data).flatMap{ encryptedData =>
+        val decryptedDataFuture = cryptoUtil.encrypt(mysalt, data).flatMap{ encryptedData =>
           assert(encryptedData != data, "Enrypted data is the same as the source data")
-          cryptoUtil.decrypt("", encryptedData)
+          cryptoUtil.decrypt(mysalt, encryptedData)
         }
         val decryptedData = Await.result(decryptedDataFuture)
         assert(decryptedData == data, "The encrypted data was not the same as the source")
@@ -65,10 +68,11 @@ class CryptUtilTest extends WordSpec with Logging {
     }
 
     "Fail to Encrypt and decrypt a string correctly with wrong salt" in {
+      val mysalt = "wrong".getBytes(StandardCharsets.UTF_8)
       val encryptedDataFuture = cryptoUtil.encrypt(defaultSalt, data)
       val encryptedData = Await.result(encryptedDataFuture)
       try {
-        val decryptedDataFuture = cryptoUtil.decrypt("wrong", encryptedData)
+        val decryptedDataFuture = cryptoUtil.decrypt(mysalt, encryptedData)
         val decryptedData = Await.result(decryptedDataFuture)
         fail("We did not get IllegalBlockSizeException")
       } catch {

@@ -1,5 +1,6 @@
 package cronus.auth
 
+import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
@@ -17,28 +18,32 @@ private[auth] class CryptUtil(private val key: String) {
 
   // We need a 128 bit key for AES
   private val key128bit = {
-    val byteKey = key.getBytes("UTF-8")
+    val byteKey = key.getBytes(StandardCharsets.UTF_8)
     val sha = MessageDigest.getInstance("SHA-1")
     val digest = sha.digest(byteKey)
     val keySlice = digest.slice(0, 16)
     new SecretKeySpec(keySlice, keyAlgorithm)
   }
 
-  def encrypt(salt: String, data: String): Future[String] = Future[String] {
+  private def toSaltString(salt: Array[Byte]): String = {
+    new String(salt.map(_.toChar))
+  }
+
+  def encrypt(salt: Array[Byte], data: String): Future[String] = Future[String] {
     @tailrec
     def encryptIteration(cipher: Cipher, srcSalt: String, src: String, count: Int): String = count match {
       case 0 => src
       case c =>
         val saltedData = s"$srcSalt$src"
-        val encryptedData = cipher.doFinal(saltedData.getBytes("UTF-8"))
+        val encryptedData = cipher.doFinal(saltedData.getBytes(StandardCharsets.UTF_8))
         encryptIteration(cipher, srcSalt, new BASE64Encoder().encode(encryptedData), count - 1)
     }
     val cipher = Cipher.getInstance(algorithm)
     cipher.init(Cipher.ENCRYPT_MODE, key128bit)
-    encryptIteration(cipher, salt, data, iterations)
+    encryptIteration(cipher, toSaltString(salt), data, iterations)
   }
 
-  def decrypt(salt: String, encryptedData: String): Future[String] = Future[String] {
+  def decrypt(salt: Array[Byte], encryptedData: String): Future[String] = Future[String] {
     @tailrec
     def decryptIteration(cipher: Cipher, srcSalt: String, src: String, count: Int): String = count match {
       case 0 => src
@@ -50,6 +55,6 @@ private[auth] class CryptUtil(private val key: String) {
     }
     val cipher = Cipher.getInstance(algorithm)
     cipher.init(Cipher.DECRYPT_MODE, key128bit)
-    decryptIteration(cipher, salt, encryptedData, iterations)
+    decryptIteration(cipher, toSaltString(salt), encryptedData, iterations)
   }
 }
