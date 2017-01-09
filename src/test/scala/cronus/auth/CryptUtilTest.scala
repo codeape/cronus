@@ -12,7 +12,7 @@ import scala.annotation.tailrec
 class CryptUtilTest extends WordSpec with Logging {
 
   val cryptoUtil = new CryptUtil("TestKeyLongerThan128Bits!")
-  val defaultSalt = (new SaltGenerator).getNext()
+  val defaultSalt = Await.result((new SaltGenerator).getNext()).bytes
   val data = "A fine string"
 
   "CryptoUtil" should {

@@ -1,6 +1,7 @@
 package cronus.auth
 
 import com.twitter.inject.Logging
+import com.twitter.util.Await
 import org.scalatest.WordSpec
 
 import scala.annotation.tailrec
@@ -15,8 +16,8 @@ class SaltGeneratorTest extends WordSpec with Logging  {
       @tailrec
       def testSalt(i: Int): Unit = {
         if (i == 0) return
-        val salt1 = new String(salt.getNext().map(_.toChar))
-        val salt2 = new String(salt.getNext().map(_.toChar))
+        val salt1 = Await.result(salt.getNext()).str()
+        val salt2 = Await.result(salt.getNext()).str()
         assert(salt1 != salt2)
         testSalt(i-1)
       }
