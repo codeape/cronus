@@ -19,6 +19,7 @@ class CryptUtilTest extends WordSpec with Logging {
 
     "Encrypt and decrypt a string correctly" in {
       val decryptedDataFuture = cryptoUtil.encrypt(defaultSalt, data).flatMap{ encryptedData =>
+        logger.debug(s"Encrypted data: $encryptedData")
         assert(encryptedData != data, "Enrypted data is the same as the source data")
         cryptoUtil.decrypt(defaultSalt, encryptedData)
       }
