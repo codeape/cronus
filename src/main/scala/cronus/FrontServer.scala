@@ -25,7 +25,6 @@ class FrontServer extends HttpServer {
       .filter[ExceptionMappingFilter[Request]]
       .add[AssetController]
       .add[UserLoginController]
-      .add[MainJsController]
       .add[TimeController]
       .add[AuthFilter, TimeSheetController]
       .exceptionMapper[JsonMappingExceptionMapper]

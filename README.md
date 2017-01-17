@@ -8,4 +8,4 @@ done!
 
 Arguments
 - cronus.asset.path: The path to the sours directory of cronus asset web jar.
-For example: /home/user/src/cronus/cronusw/src/main/public
+For example: "/home/user/cronus/src/main/public,/home/user/cronus/spi/target/scala-2.11"

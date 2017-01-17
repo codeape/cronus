@@ -1,3 +1,5 @@
+import xerial.sbt.Pack._
+
 parallelExecution in ThisBuild := false
 
 lazy val commonSettings = Seq(
@@ -27,27 +29,29 @@ lazy val versions = new {
   val mustachejs = "2.2.1"
 }
 
-lazy val cronusw = (project in file("cronusw")).
-  settings(commonSettings: _*)
-  .settings(
-    resolvers ++= Seq(
-      Resolver.sonatypeRepo("releases"),
-      "Twitter Maven" at "https://maven.twttr.com"
-    ),
+lazy val spi = (project in file("spi")).
+  settings(commonSettings: _*).
+  settings(
+    persistLauncher := true,
+    persistLauncher in Test := false,
     libraryDependencies ++= Seq(
-      "org.webjars" % "requirejs" % versions.requirejs,
-      "org.webjars" % "bootstrap" % versions.bootstrap,
-      "org.webjars" % "backbonejs" % versions.backbonejs,
-      "org.webjars" % "underscorejs" % versions.underscorejs,
-      "org.webjars" % "jquery" % versions.jquery,
-      "org.webjars" % "mustachejs" % versions.mustachejs
+      "org.scala-js" %%% "scalajs-dom" % "0.9.1"
     )
-  )
-  .enablePlugins(SbtWeb)
+  ).
+  enablePlugins(ScalaJSPlugin, ScalaJSWeb)
 
 lazy val root = (project in file(".")).
   settings(commonSettings: _*).
   settings(
+    packAutoSettings,
+    scalaJSProjects := Seq(spi),
+    pipelineStages in Assets := Seq(scalaJSPipeline),
+    // triggers scalaJSPipeline when using compile or continuous compilation
+    compile in Compile := ((compile in Compile) dependsOn scalaJSPipeline).value,
+    // Frontend depdendency configuration
+    WebKeys.packagePrefix in Assets := "public/",
+    managedClasspath in Runtime += (packageBin in Assets).value,
+
     resolvers ++= Seq(
       Resolver.sonatypeRepo("releases"),
       "Twitter Maven" at "https://maven.twttr.com"
@@ -78,6 +82,9 @@ lazy val root = (project in file(".")).
       "org.scalatest" %% "scalatest" % versions.scalatest % "test",
       "org.specs2" %% "specs2" % versions.specs2 % "test",
 
+      "org.webjars.bower" % "bootstrap" % versions.bootstrap % "test",
+      "org.webjars.bower" % "backbone" % versions.backbonejs % "test",
+
       "com.twitter" % "bijection-util_2.11" % "0.9.2",
       "com.typesafe.akka" %% "akka-actor" % versions.akka,
       "com.typesafe.akka" %% "akka-slf4j" % versions.akka,
@@ -85,5 +92,6 @@ lazy val root = (project in file(".")).
       "org.webjars" % "webjars-locator" % versions.webjars_locator
     )
   )
-  .dependsOn(cronusw)
+  .enablePlugins(SbtWeb)
+
 

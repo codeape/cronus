@@ -1,6 +1,6 @@
 package cronus.services
 
-import java.nio.file.{Files, Paths}
+import java.nio.file.{Files, Path, Paths}
 import javax.inject.{Inject, Singleton}
 
 import akka.actor.{Actor, ActorLogging, ActorRef, ActorSystem, Props}
@@ -13,8 +13,10 @@ import com.twitter.util.{Future => TwitterFuture}
 import cronus.modules.ConfigFlags
 import org.webjars.WebJarAssetLocator
 
+import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
+import scala.io.Source
 
 
 @Singleton
@@ -38,50 +40,78 @@ class WebJarAssetService @Inject()(
   }
 }
 
+private case class PageKey(webJar: String, path: String)
+
 class WebJarAssetCache(assetLocator: WebJarAssetLocator, configFlags: ConfigFlags)
   extends Actor with ActorLogging
 {
 
   import WebJarAssetCache._
 
-  var pages: scala.collection.mutable.Map[(String, String), ContentReply] =
-    scala.collection.mutable.Map.empty[(String, String), ContentReply]
+  private val pages: scala.collection.mutable.Map[PageKey, ContentReply] =
+    scala.collection.mutable.Map.empty[PageKey, ContentReply]
 
-  private def fileToArray(webjar: String, partialPath: String): Option[Array[Byte]] = {
+  private def createContentReply(bytes: Array[Byte], path: Path): ContentReply = {
+    ContentReply(Some(bytes), Files.probeContentType(path))
+  }
+
+  private def readFromWebJar(webjar: String, partialPath: String): Option[Array[Byte]] = {
     try {
-      val path = assetLocator.getFullPath(webjar, partialPath)
-      val is = assetLocator.getClass.getClassLoader.getResourceAsStream(path)
-      if (null == is) {
-        None
-      } else {
-        Some(Iterator.continually(is.read()).takeWhile(-1!=_).map(_.toByte).toArray)
+      assetLocator.getClass.getClassLoader.getResourceAsStream(assetLocator.getFullPath(webjar, partialPath)) match {
+        case null => None
+        case is => Some(Source.fromInputStream(is).map(_.toByte).toArray)
       }
-    } catch  {
+    } catch {
       case e: IllegalArgumentException => None
     }
   }
 
+  @tailrec
+  private def readFromFileSystem(paths: List[String], path: String): Option[ContentReply] = {
+    paths match {
+      case Nil => None
+      case assetsPath :: tail =>
+        val systemPath = Paths.get(assetsPath, path)
+        Files.exists(systemPath) match {
+          case true => Some(
+            createContentReply(Source.fromFile(systemPath.toString).map(_.toByte).toArray,systemPath))
+          case _ => readFromFileSystem(tail, path)
+        }
+    }
+  }
+
+  private def readFromWebJarAndCache(webjar: String, partialPath: String): ContentReply = {
+    pages.get(PageKey(webjar, partialPath)) match {
+      case Some(page) => page
+      case None => readFromWebJar(webjar, partialPath) match {
+        case Some(bytes) =>
+          val cacheIt = createContentReply(bytes, Paths.get(partialPath))
+          pages.put(PageKey(webjar, partialPath), cacheIt)
+          cacheIt
+        case None => ContentReply(None, "")
+      }
+    }
+  }
+
+  private def resolveFile(webjar: String, partialPath: String): ContentReply = {
+    val systemPaths = if (webjar == "root") {
+      configFlags.cronusAssetPaths.getOrElse(List.empty[String])
+    } else {
+      List.empty[String]
+    }
+    readFromFileSystem(systemPaths, partialPath) match {
+      case Some(content) => content
+      case None => readFromWebJarAndCache(webjar, partialPath)
+    }
+  }
+
+
   def receive = {
     case ContentRequest(webJar, path) =>
       log.debug(s"Cache received request for webjar: $webJar path: $path")
-      val page = pages.get((webJar, path))
-      val response = if(webJar == "cronusw" && configFlags.cronusAssetPath.isDefined) {
-        val fsystemPath = Paths.get(configFlags.cronusAssetPath.get, path).toString
-        val mime: String = Files.probeContentType(Paths.get(fsystemPath))
-        val bytes =  scala.io.Source.fromFile(fsystemPath).map(_.toByte).toArray
-        ContentReply(Some(bytes), if (mime == null) "text/plain" else mime )
-      } else if (page.isDefined) {
-        page.get
-      } else {
-        val bytes = fileToArray(webJar, path)
-        if (bytes.isDefined) {
-          val mime: String = Files.probeContentType(Paths.get(path))
-          val cacheIt = ContentReply(bytes, if (mime == null) "text/plain" else mime )
-          pages.put((webJar, path), cacheIt)
-          cacheIt
-        } else {
-          ContentReply(None, "")
-        }
+      val response = pages.get(PageKey(webJar, path)) match {
+        case Some(page) => page
+        case None => resolveFile(webJar, path)
       }
       sender() ! response
     case default =>

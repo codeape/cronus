@@ -1,19 +1,24 @@
 package cronus.modules
 
 import com.google.inject.{Provides, Singleton}
+
 import com.twitter.inject.TwitterModule
 
-case class ConfigFlags(cronusAssetPath: Option[String])
+case class ConfigFlags(cronusAssetPaths: Option[List[String]])
 
 class CronusConfigFlagsModule extends TwitterModule {
 
-  private val cronusAssetPath = flag("cronus.asset.path", "", "The path to the sours directory of cronus asset web jar.")
+  private val cronusAssetPaths = flag(
+    "cronus.asset.path",
+    Seq.empty[String],
+    "The paths to the source directories of cronus asset web jar."
+  )
 
   @Provides
   @Singleton
   def providesConfigFlags() = {
-    val path: Option[String] = cronusAssetPath.get
-    ConfigFlags(path)
+    val paths: Option[Seq[String]] = cronusAssetPaths.get
+    ConfigFlags(paths.map(s => s.toList))
   }
 
 }

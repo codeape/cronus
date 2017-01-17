@@ -30,9 +30,9 @@ class AssetControllerFeatureTest extends FeatureTest
         withBody = Source.fromInputStream(is).mkString)
       response.contentType should equal(Some(MediaType.JAVASCRIPT_UTF_8.toString))
 
-      val fullPath2 = locator.getFullPath("backbonejs", "backbone-min.js")
+      val fullPath2 = locator.getFullPath("backbone", "backbone-min.js")
       val is2 = locator.getClass.getClassLoader.getResourceAsStream(fullPath2)
-      val response2 = server.httpGet(path="/assets/backbonejs/backbone-min.js", andExpect = Status.Ok,
+      val response2 = server.httpGet(path="/assets/backbone/backbone-min.js", andExpect = Status.Ok,
         withBody = Source.fromInputStream(is2).mkString)
       response2.contentType should equal(Some(MediaType.JAVASCRIPT_UTF_8.toString))
     }
